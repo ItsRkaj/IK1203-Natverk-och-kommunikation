@@ -2,7 +2,7 @@ import java.net.*;
 import java.io.*;
 import tcpclient.TCPClient;
 
-public class HTTPAsk {
+public class ConcHTTPAsk {
     public static void main( String[] args) throws IOException {
 
         //Server socket
@@ -46,31 +46,40 @@ public class HTTPAsk {
             String hostname = null;			        // Domain name of server
             int port = 0;					        // Server port number
             byte[] userInputBytes = new byte[0];    // Data to send to server
-            Boolean ask = false;                    // If user ask
+            Boolean ask = false;                    // If ask
+            Boolean get = false;                    // If get
+            Boolean http = false;                   // If http
+            
 
             //Binder värden till variabler
             for (int i = 0; i < params.length; i++) {
                 switch(params[i]){
                     case "hostname":
-                        hostname = params[i+1];
+                        hostname = params[++i];
                         break;
                     case "string":
-                        userInputBytes = params[i+1].getBytes("UTF-8");
+                        userInputBytes = params[++i].getBytes("UTF-8");
                         break;
                     case "shutdown":
-                        shutdown = Boolean.parseBoolean(params[i+1]);
+                        shutdown = Boolean.parseBoolean(params[++i]);
                         break;
                     case "limit":
-                        limit = Integer.parseInt(params[i+1]);
+                        limit = Integer.parseInt(params[++i]);
                         break;
                     case "timeout":
-                        timeout = Integer.parseInt(params[i+1]);
+                        timeout = Integer.parseInt(params[++i]);
                         break;
                     case "port":
-                        port = Integer.parseInt(params[i+1]);
+                        port = Integer.parseInt(params[++i]);
                         break;
                     case "ask":
                         ask = true;
+                        break;
+                    case "GET":
+                        get = true;
+                        break;
+                    case "HTTP":
+                        http = true;
                         break;
                 }
             }
@@ -78,7 +87,7 @@ public class HTTPAsk {
             //Hanterar olika utfall
             try{
                 if(ask){
-                    if(hostname != null || port != 0){
+                    if(hostname != null && port != 0 && get && http){
                         //Constructs TCPClient
                         TCPClient tcpClient = new tcpclient.TCPClient(shutdown, timeout, limit);
                         
